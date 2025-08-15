@@ -124,7 +124,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     newColor = mix(newColor, TRAIL_COLOR_ACCENT, 1.0 - smoothstep(sdfTrail, -0.005, 0.002));
     newColor = mix(newColor, TRAIL_COLOR, antialising(sdfTrail));
 
-    newColor = mix(fragColor, newColor, (1.0 - alphaModifier) * OPACITY);
+    // Create opacity gradient along the trail
+    float trailProgress = 1.0 - alphaModifier;
+    float opacityGradient = mix(0.35, 0.05, pow(alphaModifier, 0.7));
+    float finalOpacity = trailProgress * opacityGradient;
+    
+    newColor = mix(fragColor, newColor, finalOpacity);
     fragColor = mix(newColor, fragColor, step(sdfCursor, 0));
 
 }
